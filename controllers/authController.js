@@ -59,4 +59,13 @@ const postCreateUser = (req, res, next) => {
   });
 };
 
-module.exports = { getSignUpForm, validateSignupForm, postCreateUser };
+const getLoginForm = (req, res) => {
+  res.render("login");
+};
+
+module.exports = {
+  getSignUpForm,
+  validateSignupForm,
+  postCreateUser,
+  getLoginForm,
+};
