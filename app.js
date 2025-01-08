@@ -3,7 +3,8 @@ const express = require("express");
 const session = require("express-session");
 const { PrismaSessionStore } = require("@quixo3/prisma-session-store");
 const { PrismaClient } = require("@prisma/client");
-const passport = require("./configs/passport");
+const passport = require("passport");
+const authRouter = require("./routes/authRoutes");
 
 const app = express();
 
@@ -35,6 +36,11 @@ app.use((req, res, next) => {
   res.locals.currentUser = req.user;
   next();
 });
+
+/**
+ * Register routers
+ */
+app.use("/auth", authRouter);
 
 const PORT = process.env.port || 3000;
 app.listen(PORT, "0.0.0.0", () => {
