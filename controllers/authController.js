@@ -1,6 +1,9 @@
 const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const passport = require("passport");
+const { PrismaClient } = require("@prisma/client");
+
+const prisma = new PrismaClient();
 
 const getSignUpForm = (req, res) => {
   res.render("signup");
@@ -37,6 +40,23 @@ const validateSignupForm = [
   },
 ];
 
-const postCreateUser = (req, res) => {};
+const postCreateUser = (req, res, next) => {
+  // Create new user in database with hashed password
+  bcrypt.hash(req.body.password, 10, async (err, hashedPassword) => {
+    if (err) return next(err);
+    const { email } = req.body;
+    try {
+      await prisma.users.create({
+        data: {
+          email,
+          hash_pass: hashedPassword,
+        },
+      });
+      res.send(`created user`);
+    } catch (err) {
+      return next(err);
+    }
+  });
+};
 
 module.exports = { getSignUpForm, validateSignupForm, postCreateUser };
